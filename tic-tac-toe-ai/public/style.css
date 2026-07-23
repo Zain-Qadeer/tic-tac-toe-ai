@@ -1,0 +1,410 @@
+/* ============================================================
+   Tic-Tac-Toe AI — Stylesheet
+   Design concept: an actual notebook page. This is how people have
+   played Tic-Tac-Toe for centuries — grid paper, a blue ballpoint
+   pen for one player, a red pen for the other. The AI is "classical"
+   in spirit, so the UI mimics the original, low-tech version of the
+   game instead of a generic dark-mode dashboard.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --paper: #f4f2e9;
+  --paper-line: rgba(58, 90, 140, 0.16);   /* faint blue ruled lines */
+  --margin-red: rgba(178, 58, 46, 0.35);
+  --ink: #2b2a26;                          /* pencil/body text */
+  --ink-dim: #6f6b5e;
+  --pen-blue: #2c4a7c;                     /* X */
+  --pen-red: #b23a2e;                      /* O */
+  --pencil-grey: #8b8672;                  /* grid lines drawn on the board */
+  --card-shadow: rgba(43, 42, 38, 0.18);
+  --radius: 3px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--paper-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--margin-red) 1.5px, transparent 1.5px);
+  background-size: 100% 32px, 100% 100%;
+  background-position: 0 52px, 38px 0;
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 18px 16px;
+}
+
+.app {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-left: 14px;
+}
+
+@media (max-width: 480px) {
+  .app { margin-left: 0; }
+  body { background-position: 0 52px, 14px 0; }
+}
+
+/* ---------------- Header ---------------- */
+
+.header {
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+.header h1 {
+  font-family: 'Kalam', cursive;
+  font-weight: 700;
+  font-size: 2.4rem;
+  line-height: 1;
+  margin: 0 0 8px;
+  color: var(--pen-blue);
+  transform: rotate(-1deg);
+}
+
+.header .accent {
+  color: var(--pen-red);
+}
+
+.subtitle {
+  color: var(--ink-dim);
+  font-size: 0.93rem;
+  margin: 0 0 10px;
+}
+
+.badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: #fff;
+  border: 1px dashed var(--pencil-grey);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+/* ---------------- Panels: styled like a sheet of paper pinned down ---------------- */
+
+.panel {
+  position: relative;
+  background: #fffdf8;
+  border: 1px solid rgba(43, 42, 38, 0.1);
+  border-radius: var(--radius);
+  padding: 26px 22px;
+  box-shadow: 0 1px 0 var(--card-shadow), 0 10px 20px -12px var(--card-shadow);
+  transform: rotate(-0.35deg);
+}
+
+#game-screen.panel {
+  transform: rotate(0.3deg);
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 22px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--pen-red);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25);
+}
+
+.panel h2 {
+  font-family: 'Kalam', cursive;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin: 0 0 18px;
+  color: var(--ink);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ---------------- Setup screen ---------------- */
+
+.setup-group {
+  margin-bottom: 20px;
+}
+
+.setup-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+  margin-bottom: 8px;
+}
+
+.option-row {
+  display: flex;
+  gap: 10px;
+}
+
+.option-btn {
+  flex: 1;
+  padding: 11px;
+  background: #fff;
+  border: 1.5px solid rgba(43, 42, 38, 0.18);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.option-btn:hover {
+  border-color: var(--pen-blue);
+}
+
+.option-btn.selected {
+  border-color: var(--pen-blue);
+  color: var(--pen-blue);
+  font-weight: 600;
+  box-shadow: inset 0 -3px 0 -1px var(--pen-blue);
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 13px;
+  background: var(--pen-blue);
+  color: #fdfcf7;
+  border: none;
+  border-radius: var(--radius);
+  font-family: 'Kalam', cursive;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.primary-btn:hover {
+  filter: brightness(1.12);
+}
+
+.primary-btn:active {
+  transform: scale(0.98) rotate(-0.5deg);
+}
+
+.secondary-btn {
+  width: 100%;
+  padding: 11px;
+  background: #fff;
+  color: var(--ink);
+  border: 1.5px dashed rgba(43, 42, 38, 0.3);
+  border-radius: var(--radius);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.secondary-btn:hover {
+  border-color: var(--pen-red);
+  color: var(--pen-red);
+}
+
+/* ---------------- Status bar ---------------- */
+
+.status-bar {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+#status-text {
+  font-family: 'Kalam', cursive;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+#status-text.thinking {
+  color: var(--pen-blue);
+}
+
+#status-text.win {
+  color: var(--pen-blue);
+}
+
+#status-text.lose {
+  color: var(--pen-red);
+}
+
+/* ---------------- Board ----------------
+   Built as: a grid-paper square, a hand-drawn SVG grid + marks layer,
+   and a transparent click-target layer on top. See script.js. */
+
+.board {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  background:
+    repeating-linear-gradient(var(--paper-line) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, var(--paper-line) 0 1px, transparent 1px 22px),
+    #fffefb;
+  border-radius: 6px;
+  border: 1px solid rgba(43, 42, 38, 0.12);
+}
+
+.board-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.grid-line {
+  fill: none;
+  stroke: var(--pencil-grey);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.mark-x {
+  fill: none;
+  stroke: var(--pen-blue);
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+
+.mark-o {
+  fill: none;
+  stroke: var(--pen-red);
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+
+.win-line {
+  fill: none;
+  stroke: var(--pen-red);
+  stroke-width: 6;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
+.draw-in {
+  animation: drawLine 0.35s ease forwards;
+}
+
+@keyframes drawLine {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.cell-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.cell {
+  cursor: pointer;
+}
+
+.cell:not(.disabled):hover {
+  background: rgba(44, 74, 124, 0.06);
+}
+
+.cell.disabled {
+  cursor: default;
+}
+
+/* ---------------- Stats: styled like a little printed receipt stapled on ---------------- */
+
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.stat {
+  text-align: center;
+  background: #fff;
+  border: 1px dashed rgba(43, 42, 38, 0.25);
+  border-radius: var(--radius);
+  padding: 8px 16px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--ink-dim);
+  margin-bottom: 3px;
+}
+
+.stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.05rem;
+  color: var(--pen-blue);
+}
+
+/* ---------------- Controls ---------------- */
+
+.controls {
+  margin-top: 18px;
+}
+
+/* ---------------- Footer ---------------- */
+
+.footer {
+  color: var(--ink-dim);
+  font-size: 0.78rem;
+  margin: 22px 0 8px;
+  text-align: center;
+}
+
+.footer a {
+  color: var(--pen-blue);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--pen-blue);
+}
+
+/* ---------------- Responsive tweaks ---------------- */
+
+@media (max-width: 380px) {
+  .header h1 {
+    font-size: 1.95rem;
+  }
+
+  .panel {
+    padding: 20px 16px;
+  }
+
+  .stats {
+    gap: 8px;
+  }
+
+  .stat {
+    padding: 7px 10px;
+  }
+}
